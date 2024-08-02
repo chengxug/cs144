@@ -7,59 +7,74 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 bool Writer::is_closed() const
 {
   // Your code here.
-  return {};
+  return {is_end_};
 }
 
 void Writer::push( string data )
 {
   // Your code here.
-  (void)data;
+  uint64_t to_add_data_size = std::min(data.size(),capacity_ - buffer.size());
+
+  for(uint64_t i = 0; i < to_add_data_size; i++){
+    buffer.push_front(data[i]);
+  }
+
+  write_count_+= to_add_data_size;
   return;
 }
 
 void Writer::close()
 {
   // Your code here.
+  is_end_ = true;
 }
 
 uint64_t Writer::available_capacity() const
 {
   // Your code here.
-  return {};
+  return {capacity_ - buffer.size()};
 }
 
 uint64_t Writer::bytes_pushed() const
 {
   // Your code here.
-  return {};
+  return {write_count_};
 }
 
 bool Reader::is_finished() const
 {
   // Your code here.
-  return {};
+  return {is_end_ && !buffer.size()};
 }
 
 uint64_t Reader::bytes_popped() const
 {
   // Your code here.
-  return {};
+  return {read_count_};
 }
 
 string_view Reader::peek() const
 {
   // Your code here.
-  return {};
+  if (buffer.empty()){
+    return std::string_view{};
+  }
+  return {std::string_view(&buffer.back(),1)};
 }
 
 void Reader::pop( uint64_t len )
 {
-  // Your code here.
-  (void)len;
+  if (buffer.size() >= len){
+    read_count_ += len;
+    buffer.erase(buffer.end()-len,buffer.end());
+  }
+  else{
+    throw exception();
+  }
 }
 
 uint64_t Reader::bytes_buffered() const
 {
   // Your code here.
-  return {};
+  return {buffer.size()};
 }
