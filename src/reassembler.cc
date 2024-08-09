@@ -31,7 +31,7 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   if (buffer.find(first_index) != buffer.end()){
     return;
   }
-
+  is_eof = is_last_substring;
   // 在 Reassembler 可容纳范围内 substring 的保存
   string to_storged;
   if (first_index <= next_byte_index_){

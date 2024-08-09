@@ -7,10 +7,14 @@ class Reassembler
 {
 public:
   // Construct Reassembler to write into given ByteStream.
-  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {
-    storge_count_ = 0;
-    next_byte_index_ = 0;
-    first_unacceptable_index_ = next_byte_index_ + output_.writer().available_capacity();
+  explicit Reassembler( ByteStream&& output ) 
+  : output_( std::move( output ) ),
+    is_eof(false),
+    storge_count_(0),
+    next_byte_index_(0),
+    first_unacceptable_index_(next_byte_index_ + output.writer().available_capacity()),
+    buffer()
+  {
   }
 
   /*
@@ -47,8 +51,10 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
+  bool is_eof;
+  uint64_t storge_count_; //bytes stored in the Reassembler 
   uint64_t next_byte_index_; //first unassembled index
   uint64_t first_unacceptable_index_; // first unacceptable index
-  uint64_t storge_count_; //bytes stored in the Reassembler 
-  map<uint64_t,string> buffer; // storge buffer of Reassembler
+  std::map<uint64_t,std::string> buffer; // storge buffer of Reassembler
+
 };
