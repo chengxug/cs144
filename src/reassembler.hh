@@ -1,12 +1,17 @@
 #pragma once
 
+#include <map>
 #include "byte_stream.hh"
 
 class Reassembler
 {
 public:
   // Construct Reassembler to write into given ByteStream.
-  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {}
+  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {
+    storge_count_ = 0;
+    next_byte_index_ = 0;
+    first_unacceptable_index_ = next_byte_index_ + output_.writer().available_capacity();
+  }
 
   /*
    * Insert a new substring to be reassembled into a ByteStream.
@@ -42,4 +47,8 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
+  uint64_t next_byte_index_; //first unassembled index
+  uint64_t first_unacceptable_index_; // first unacceptable index
+  uint64_t storge_count_; //bytes stored in the Reassembler 
+  map<uint64_t,string> buffer; // storge buffer of Reassembler
 };
