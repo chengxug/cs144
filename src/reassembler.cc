@@ -35,11 +35,11 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   // 在 Reassembler 可容纳范围内 substring 的保存
   string to_storged;
   if (first_index <= next_byte_index_){
-    to_storged = data.substr(next_byte_index_ - first_index,std::min(data.size()-1,first_unacceptable_index_ - first_index - 1));
+    to_storged = data.substr(next_byte_index_ - first_index,std::min(data.size(),first_unacceptable_index_ - first_index));
     buffer[next_byte_index_] = to_storged;
   }else if (first_index < first_unacceptable_index_)
   {
-    to_storged = data.substr(0,std::min(first_unacceptable_index_ - first_index - 1,data.size() - 1));
+    to_storged = data.substr(0,std::min(first_unacceptable_index_ - first_index,data.size()));
     buffer[first_index] = to_storged;
   }
   storge_count_ += to_storged.size();

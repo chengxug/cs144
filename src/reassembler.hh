@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <algorithm>
 #include "byte_stream.hh"
 
 class Reassembler
