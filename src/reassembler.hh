@@ -10,6 +10,7 @@ public:
   // Construct Reassembler to write into given ByteStream.
   explicit Reassembler( ByteStream&& output ) 
   : output_( std::move( output ) ),
+    end_byte_index(0),
     is_eof(false),
     storge_count_(0),
     next_byte_index_(0),
@@ -52,7 +53,8 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
-  bool is_eof;
+  uint64_t end_byte_index; // The Latest byte index plus 1;
+  bool is_eof; // singal Reassembler get the end_byte_index;
   uint64_t storge_count_; //bytes stored in the Reassembler 
   uint64_t next_byte_index_; //first unassembled index
   uint64_t first_unacceptable_index_; // first unacceptable index

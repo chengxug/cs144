@@ -31,8 +31,12 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   if (buffer.find(first_index) != buffer.end()){
     return;
   }
-  is_eof = is_last_substring;
-  // 在 Reassembler 可容纳范围内 substring 的保存
+  
+  if (is_last_substring){ //标记字节流结束字节
+    end_byte_index = first_index + data.size();
+    is_eof = true;
+  }
+  // 在 Reassembler 可容纳范围内的 substring 保存
   string to_storged;
   if (first_index <= next_byte_index_){
     to_storged = data.substr(next_byte_index_ - first_index,std::min(data.size(),first_unacceptable_index_ - first_index));
@@ -47,6 +51,9 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   //把可写入的 substring 写入 ByteStream 
   while (true)
   {
+    if( is_eof && next_byte_index_ >= end_byte_index){
+      output_.writer().close();
+    }
     auto search = buffer.find(next_byte_index_);
     if(search == buffer.end()){
       break;
