@@ -36,6 +36,8 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     end_byte_index = first_index + data.size();
     is_eof = true;
   }
+
+  first_unacceptable_index_ = next_byte_index_ + output_.writer().available_capacity(); //ByteSteram中的 avaliable_capacity可能已经更新，first_unacceptable_index 也要更新
   // 在 Reassembler 可容纳范围内的 substring 保存
   string to_storged;
   if (first_index <= next_byte_index_){
