@@ -58,7 +58,21 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     }
     auto search = buffer.find(next_byte_index_);
     if(search == buffer.end()){
-      break;
+      bool flag = false;
+      for( auto& pair : buffer){ //查找 Reassembler storge buffer 中 first_index < next_byte_index 的字符串，并作处理
+        if(pair.first < next_byte_index_){
+          std::string temp = pair.second.substr(next_byte_index_ - pair.first);
+          storge_count_ -= next_byte_index_ - pair.first;
+          auto node = buffer.extract(pair.first);
+          node.key() = next_byte_index_;
+          buffer.insert(std::move(node));
+          buffer[next_byte_index_] = temp;
+          flag = true;
+        }
+      }
+      if(!flag){
+        break;
+      }
     }
     uint64_t pushed_count = std::min(output_.writer().available_capacity(),buffer[next_byte_index_].size()); 
     output_.writer().push(buffer[next_byte_index_]);
