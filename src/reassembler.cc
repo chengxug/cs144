@@ -41,8 +41,10 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   // 在 Reassembler 可容纳范围内的 substring 保存
   string to_storged;
   if (first_index <= next_byte_index_){
-    to_storged = data.substr(next_byte_index_ - first_index,std::min(first_index + data.size() - next_byte_index_,first_unacceptable_index_ - first_index));
-    buffer[next_byte_index_] = to_storged;
+    if(first_index + data.size() > next_byte_index_){
+      to_storged = data.substr(next_byte_index_ - first_index,std::min(first_index + data.size() - next_byte_index_,first_unacceptable_index_ - first_index));
+      buffer[next_byte_index_] = to_storged;
+    }
   }else if (first_index < first_unacceptable_index_)
   {
     to_storged = data.substr(0,std::min(first_unacceptable_index_ - first_index,data.size()));
