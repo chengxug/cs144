@@ -1,12 +1,15 @@
 #pragma once
 
 #include "byte_stream.hh"
-
+#include "reassembler_buffer.hh"
 class Reassembler
 {
 public:
   // Construct Reassembler to write into given ByteStream.
-  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {}
+  explicit Reassembler( ByteStream&& output ) : 
+  output_( std::move( output ) ),
+  first_unaccpetable_index(output_.writer().available_capacity())
+  {}
 
   /*
    * Insert a new substring to be reassembled into a ByteStream.
@@ -42,4 +45,9 @@ public:
 
 private:
   ByteStream output_; // the Reassembler writes to this ByteStream
+  ReassBuff buffer_{}; //Storge unreassembled data
+  uint64_t end_byte_index{0}; // 
+  bool is_get_end{false}; //singal end_byte_index vaild
+  uint64_t next_byte_index{0};
+  uint64_t first_unaccpetable_index;
 };
